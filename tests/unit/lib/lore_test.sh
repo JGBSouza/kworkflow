@@ -182,6 +182,23 @@ function test_extract_metadata_from_patch_title_single_patch()
   assertEquals "($LINENO)" "$output" "$expected"
 }
 
+function test_extract_metadata_from_patch_title_ignore_cases()
+{
+  local output
+  local sample_name
+  local sample_url
+  local expected
+
+  expected="1${SEPARATOR_CHAR}1${SEPARATOR_CHAR}"
+  expected+='drm/vc4: drop all currently held locks if deadlock happens'
+  expected+="${SEPARATOR_CHAR}"
+
+  sample_name='[Patch] drm/vc4: drop all currently held locks if deadlock happens'
+  output=$(extract_metadata_from_patch_title "$sample_name")
+
+  assertEquals "($LINENO)" "$output" "$expected"
+}
+
 function test_extract_metadata_from_patch_title_rfc()
 {
   local output
@@ -203,6 +220,24 @@ function test_extract_metadata_from_patch_title_rfc()
   output=$(extract_metadata_from_patch_title "$sample_name")
 
   assertEquals "($LINENO)" "$output" "$expected"
+}
+
+function test_extract_metadata_from_patch_title_multiple_brackets()
+{
+  local output
+  local sample_name
+  local sample_url
+  local expected
+
+  expected="1${SEPARATOR_CHAR}23${SEPARATOR_CHAR}"
+  expected+='f2fs: fix to check return value of f2fs_reserve_new_block()'
+  expected+="${SEPARATOR_CHAR}"
+
+  sample_name='[f2fs-dev] [PATCH AUTOSEL 4.19 01/23]'
+  sample_name+='f2fs: fix to check return value of f2fs_reserve_new_block()'
+  output=$(extract_metadata_from_patch_title "$sample_name")
+
+  assertEquals "($LINENO)" "$expected" "$output"
 }
 
 function test_delete_series_from_local_storage()

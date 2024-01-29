@@ -239,7 +239,7 @@ function extract_metadata_from_patch_title()
   local total_patches="X${SEPARATOR_CHAR}"
   local patch_title="${patch_title}"
 
-  patch_prefix=$(printf '%s' "$patch_title" | grep --only-matching --perl-regexp '^\[(RFC|PATCH).*\]')
+  patch_prefix=$(printf '%s' "$patch_title" | grep --only-matching --perl-regexp --ignore-case '\[(RFC|PATCH).*\]')
   if [[ "$?" == 0 ]]; then
     # Patch version
     patch_version=$(printf '%s' "$patch_prefix" | grep --only-matching --perl-regexp '[v|V]+\d+' | grep --only-matching --perl-regexp '\d+')
@@ -255,7 +255,7 @@ function extract_metadata_from_patch_title()
     total_patches+="${SEPARATOR_CHAR}"
 
     # Get patch title
-    patch_title=$(printf '%s' "$patch_title" | cut -d ']' -f2)
+    patch_title=$(printf '%s' "$patch_title" | rev | cut -d ']' -f1 | rev)
     patch_title=$(str_strip "$patch_title")
   fi
 
