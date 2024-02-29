@@ -13,3 +13,16 @@ VALUES ('build_failure', '2021-11-18', '16:53:25', 20),
 ('list', '2021-11-18', '10:53:00', 45),
 ('deploy', '2021-11-17', '16:33:22', 60),
 ('build', '2021-09-18', '13:00:43', 980);
+
+INSERT INTO "mail_group" ("name")
+VALUES ('TEST_GROUP'),
+('test_group4')
+
+INSERT INTO "mail_contact_group" ("contact_id","group_id")
+VALUES ('111', '1'),
+('222', '1')
+
+INSERT INTO "mail_contact" ("name","email")
+VALUES ('Test Contact 20', 'test20@email.com'),
+('Test Contact 20', 'test20@email.com'),
+('Test Contact 20', 'test20@email.com')

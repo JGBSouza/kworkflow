@@ -44,7 +44,7 @@ function test_execute_sql_script()
   # Here we make use of SQLite's internal commands to return a list of the
   # tables in the db, the semicolon ensures sqlite3 closes
   output=$(sqlite3 "$KW_DATA_DIR/kw.db" -cmd '.tables' -batch ';')
-  expected='^fake_table[[:space:]]+pomodoro[[:space:]]+statistics[[:space:]]+tags[[:space:]]*$'
+  expected='^\s*fake_table\s+mail_contact_group\s+pomodoro\s+tags\s+mail_contact\s+mail_group\s+statistics\s*$'
   assertTrue "($LINENO) Testing tables" '[[ "$output" =~ $expected ]]'
 
   execute_sql_script "$DB_FILES/insert.sql"

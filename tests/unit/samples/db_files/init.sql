@@ -26,3 +26,24 @@ CREATE TABLE IF NOT EXISTS "fake_table" (
   "attribute2" TEXT,
   PRIMARY KEY("id")
 );
+
+CREATE TABLE IF NOT EXISTS "mail_group" (
+    "id" INTEGER NOT NULL UNIQUE,
+    "name" VARCHAR(50) NOT NULL UNIQUE,
+    PRIMARY KEY("id")
+);
+
+CREATE TABLE IF NOT EXISTS "mail_contact" (
+    "id" INTEGER NOT NULL UNIQUE,
+    "name" VARCHAR(100) NOT NULL,
+    "email" VARCHAR(100) NOT NULL,
+    PRIMARY KEY("id")
+);
+
+CREATE TABLE IF NOT EXISTS "mail_contact_group" (
+    "contact_id" SERIAL INTEGER,
+    "group_id" INTEGER,
+    PRIMARY KEY ("contact_id", "group_id"),
+    FOREIGN KEY ("contact_id") REFERENCES "mail_contact"("id"),
+    FOREIGN KEY ("group_id") REFERENCES "mail_group"("id")
+);
