@@ -46,6 +46,17 @@ CREATE TABLE IF NOT EXISTS "event" (
   PRIMARY KEY("id")
 );
 
+-- This is the table that holds the events triggered by kw, currently pertains
+-- to the executed commands that are saved and the pomodoro sessions created
+CREATE TABLE IF NOT EXISTS "patch" (
+  "id" INTEGER NOT NULL UNIQUE,
+  "date" TEXT NOT NULL,
+  "time" TEXT,
+  "status" VARCHAR(50) NOT NULL,
+  "title" TEXT, 
+  PRIMARY KEY("id")
+);
+ 
 -- This is the relationship between an "event" that executes a given
 -- "command_label"
 CREATE TABLE IF NOT EXISTS "executed" (
