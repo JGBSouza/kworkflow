@@ -561,7 +561,9 @@ function mail_send()
   local flag="$1"
   local opts="${mail_config[send_opts]}"
   local to_recipients="${options_values['TO']}"
+  local to_groups="${options_values['TO_GROUPS']}"
   local cc_recipients="${options_values['CC']}"
+  local cc_groups
   local dryrun="${options_values['SIMULATE']}"
   local commit_range="${options_values['COMMIT_RANGE']}"
   local version="${options_values['PATCH_VERSION']}"
@@ -1425,7 +1427,7 @@ function parse_mail_options()
   local short_options='s,t,f,v:,i,l,n,'
   local long_options='send,simulate,to:,cc:,setup,local,global,force,verify,verbose,'
   long_options+='template::,interactive,no-interactive,list,private,rfc,groups::,'
-  long_options+='append:,rename:,create:,remove:,remove-email:,'
+  long_options+='append:,rename:,create:,remove:,remove-email:,to-group:,cc-group:,'
   local pass_option_to_send_email
 
   long_options+='email:,name:,'
@@ -1447,7 +1449,9 @@ function parse_mail_options()
   # Default values
   options_values['SEND']=''
   options_values['TO']=''
+  options_values['TO_GROUPS']=''
   options_values['CC']=''
+  options_values['CC_GROUPS']=''
   options_values['SIMULATE']=''
   options_values['SETUP']=0
   options_values['FORCE']=0
@@ -1510,8 +1514,16 @@ function parse_mail_options()
         options_values['TO']="$2"
         shift 2
         ;;
+      --to-groups)
+        options_values['TO_GROUPS']="$2"
+        shift 2
+        ;;
       --cc)
         options_values['CC']="$2"
+        shift 2
+        ;;
+      --cc-groups)
+        options_values['CC_GROUPS']="$2"
         shift 2
         ;;
       --simulate)
