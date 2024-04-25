@@ -121,6 +121,10 @@ function kw_mail_groups()
     return "$?"
   fi
 
+  if [[ -n "${options_values['SHOW']}" ]]; then
+    print_groups_infos "${options_values['GROUP']}"
+  fi
+  
   return 0
 }
 
@@ -548,6 +552,90 @@ function remove_contacts_without_group()
 
   return 0
 }
+
+function groups_show()
+{
+  local group_name="$1"  
+  local groups_info
+
+  if [[ -z "$groups" ]]; then
+    groups_info="$(select_from_where "$DATABASE_TABLE_GROUP" '' '' 'condition_array')"
+    readarray -t groups_array <<< "$groups_info"
+    print_groups_infos "$groups_array"
+    return 0
+  fi  
+
+  validate_group "$group_name" || exit_msg 'Error while validating group'
+  condition_array=(['name']="$group_name")
+  group_info="$(select_from_where "$DATABASE_TABLE_GROUP" '' '' 'condition_array')"
+  group_contacts="$()"
+
+}
+
+function print_groups_infos() 
+{
+  local group_name="$1"  
+  local groups_info
+
+  if [[ -z "$groups" ]]; then
+    groups_info="$(select_from_where "$DATABASE_TABLE_GROUP" '' '' 'condition_array')"
+    readarray -t groups_array <<< "$groups_info"
+  fi
+
+  get_associated_contact_number "$groups_array"
+
+  # Obtém o tamanho da tela
+  columns=$(tput cols)
+
+  # Calcula o tamanho das colunas dividindo igualmente o espaço disponível
+  id_width=$((columns / 4))
+  nome_width=$((columns / 4))
+  num_contatos_width=$((columns / 4))
+  data_width=$((columns - id_width - nome_width - num_contatos_width))
+
+  # Imprime o cabeçalho da tabela
+  printf "%-${id_width}s | %-${nome_width}s | %-${num_contatos_width}s | %-${data_width}s\n" "ID" "Nome" "Número de Contatos" "Data de Criação"
+  printf "%-${columns}s\n" | tr ' ' '-'
+
+  # Imprime as informações de cada grupo
+  for grupo in "${!grupos[@]}"; do
+    # Separa os campos do grupo
+    IFS='|'
+    read -r id nome num_contatos data_criacao <<< "${grupos[$grupo]}"
+
+    # Formata a linha para imprimir as informações do grupo
+    printf "%-${id_width}s | %-${nome_width}s | %-${num_contatos_width}s | %-${data_width}s\n" "$id" "$nome" "$num_contatos" "$data_criacao"
+  done
+
+  # Restaura o cursor normal
+  tput cnorm
+  return
+
+  local -a contacts=(
+    [0]="1|Joana|joana@example.com|1"
+    [1]="2|Maria|maria@example.com|1"
+  )
+
+  # Obtém o tamanho da tela
+  columns=$(tput cols)
+
+  # Calcula o tamanho das colunas dividindo igualmente o espaço disponível
+  id_width=$((columns / 4))
+  nome_width=$((columns / 4))
+  email_width=$((columns / 4))
+  quantidade_grupos_width=$((columns - id_width - nome_width - email_width))
+
+  # Imprime o cabeçalho da tabela de contatos
+  printf "\n%-${id_width}s | %-${nome_width}s | %-${email_width}s | %-${quantidade_grupos_width}s\n" "ID" "Nome" "Email" "Número de Grupos Associados"
+  printf "%-${columns}s\n" | tr ' ' '-'
+
+  # Imprime as informações de cada contato
+  for contato in "${contacts[@]}"; do
+      IFS='|' read -r id nome email qtd_grupos_associados <<< "$contato"
+      printf "%-${id_width}s | %-${nome_width}s | %-${email_width}s | %-${quantidade_grupos_width}s\n" "$id" "$nome" "$email" "$qtd_grupos_associados"
+  done
+
+} 
 
 # This function prepares the appropriate options to send patches using
 # `git send-email`.
@@ -1502,6 +1590,12 @@ function parse_mail_options()
         options_values['GROUPS_RENAME']="$2"
         shift 3
         ;;
+      --show)
+        option="$(str_strip "$2")"
+        options_values['SHOW']=1
+        options_values['GROUP']="$option"
+        shift 2
+      ;;
       --list | -l)
         mail_list
         exit
