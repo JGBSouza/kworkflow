@@ -752,3 +752,16 @@ function get_git_repository_branches()
     _branches["$branch"]="$branch_metadata"
   done <<< "$output"
 }
+
+function get_patch_subject() {
+local -r FILE_PATH="$1"
+local patch_title
+
+if [[ ! -f "$FILE_PATH" ]]; then
+  return 1 # EPERM
+fi
+
+patch_title=$(grep -m 1 "^Subject: " "$FILE_PATH" | sed 's/^Subject: \[PATCH[^]]*\] //')
+
+printf '%s\n' "$patch_title"
+}
