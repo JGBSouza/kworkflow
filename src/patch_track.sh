@@ -27,13 +27,13 @@ function patch_track_main()
     fi
 
     if [[ -n "${options_values['DASHBOARD']}" ]]; then
-        show_patches_dashboard "$flag"
+        show_patches_dashboard "${options_values['FROM']}" "${options_values['BEFORE']}" "${options_values['AFTER']}" "$flag"
         return 0
     fi
 
     if [[ -n "${options_values['SET_STATUS']}" ]]; then
         if [[ -z "${options_values['PATCH_ID']}" ]] ; then
-            complain 'Patch id not specified with `--patch-id num`'
+            complain 'Patch id not specified with `--id <num>`'
             return 22 #EINVAL
         fi
 
@@ -41,17 +41,6 @@ function patch_track_main()
         return 0
     fi
 
-    if [[ -n "${options_values['FROM']}" ]]; then
-        show_patches_dashboard "${options_values['FROM']}"
-    fi
-
-    if [[ -n "${options_values['BEFORE']}" ]]; then
-        show_patches_dashboard "${options_values['BEFORE']}"
-    fi
-
-    if [[ -n "${options_values['AFTER']}" ]]; then
-        show_patches_dashboard "${options_values['AFTER']}"
-    fi
 }
 
 function register_patch_track()
@@ -66,7 +55,15 @@ function register_patch_log()
 
 function show_patches_dashboard()
 {
-    
+    local from="$1"
+    local before="$2"
+    local after="$3"
+
+
+    if [[ -n "$from" ]]; then
+    else if [[ -n "$before" ]]; then
+    else if [[ -n "$from" ]]; then
+    fi
 }
 
 function set_patch_status()
@@ -84,7 +81,7 @@ function set_patch_status()
 
 function parse_patch_track()
 {
-  local long_options='patch-id:,show,set-status:,from:,before:,after:,'
+  local long_options='id:,show,set-status:,from:,before:,after:,'
   local short_options='-s,-f:,-b:,-a:,-p:'
   local options
 
@@ -113,11 +110,11 @@ function parse_patch_track()
         options_values['SHOW']=1
         shift 2
         ;;
-      --patch_id)
+      --id)
         options_values['PATCH_ID']="$2"
         shift 2
         ;;
-      --set-status)
+      --set-status | -s)
         options_values['SET_STATUS']="$2"
         shift 2
         ;;
@@ -149,14 +146,13 @@ function patch_track_help()
 {
   if [[ "$1" == --help ]]; then
     include "$KW_LIB_DIR/help.sh"
-    kworkflow_man 'pomodoro'
+    kworkflow_man 'patch-track'
     return
   fi
-  printf '%s\n' 'kw pomodoro:' \
-    '  pomodoro (-t|--set-timer) <time>(h|m|s) - Set pomodoro timer' \
-    '  pomodoro (-c|--check-timer) - Show elapsed time' \
-    '  pomodoro (-s|--show-tags) - Show registered tags' \
-    '  pomodoro (-t|--set-timer) <time>(h|m|s) (-g|--tag) <tag> - Set timer with tag' \
-    '  pomodoro (-t|--set-timer) <time>(h|m|s) (-g|--tag) <tag> (-d|--description) <desc> - Set timer with tag and description' \
-    '  pomodoro (--verbose) - Show a detailed output'
+  printf '%s\n' 'kw patch-track:' \
+    '  patch-track (-d|--dashboard) [[--before <from>] | [--after <date>] [--before <date>]] - Show patches dashboard in chronological order ' \
+    '  patch-track (--id) [-s| --set-status] - Show infos from patch with given id ' \
+    '  patch-track (-d|--dashboard) - Show patches dashboard in chronological order ' \
+    '  patch-track (-d|--dashboard) - Show patches dashboard in chronological order ' \
+
 }
