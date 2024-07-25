@@ -50,10 +50,11 @@ CREATE TABLE IF NOT EXISTS "event" (
 -- to the executed commands that are saved and the pomodoro sessions created
 CREATE TABLE IF NOT EXISTS "patch" (
   "id" INTEGER NOT NULL UNIQUE,
-  "date" TEXT NOT NULL,
-  "time" TEXT,
-  "status" VARCHAR(50) NOT NULL,
-  "title" TEXT, 
+  "date" TEXT DEFAULT (date('now', 'localtime')),
+  "time" TEXT DEFAULT (time('now', 'localtime')),
+  "status" VARCHAR(50) DEFAULT ('SENT') NOT NULL ,
+  "title" TEXT NOT NULL, 
+  CHECK ("status" IN ('SENT', 'APPROVED', 'MERGED', 'REVIEWED', 'REJECTED'))
   PRIMARY KEY("id")
 );
  

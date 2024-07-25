@@ -1,0 +1,56 @@
+From b109af266156946b6cdc311f61c1c77ad834273b Mon Sep 17 00:00:00 2001
+From: JGBSouza <joaosouzaaa12@usp.br>
+Date: Tue, 26 Mar 2024 21:37:50 -0300
+Subject: [PATCH 2/2] initial commit 2
+
+---
+ src/patch_track.sh | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/src/patch_track.sh b/src/patch_track.sh
+index c6eeb47..d3a2840 100644
+--- a/src/patch_track.sh
++++ b/src/patch_track.sh
+@@ -75,17 +75,17 @@ function set_patch_status()
+     local patch_new_status="$2"
+     local patch_infos
+ 
+-    condition_array=(['id']="$patch_id")
++    condition_array=(['id']="${patch_id}")
+     patch_infos="$(select_from_where "$DATABASE_PATCH_TABLE" '' 'condition_array')"
+ 
+-    set_array=(['status']="$patch_id")
++    set_array=(['status']="${patch_id}")
+     return "$(update_into "$DATABASE_PATCH_TITLE" 'condition_array' 'set_array')"
+ }
+ 
+ function parse_patch_track()
+ {
+-  local long_options='dashboard,patch-id:,set-status:,from:,before:,after:'
+-  local short_options='-d:,-s:,-f:,-b:,-a:'
++  local long_options='patch-id:,show,set-status:,from:,before:,after:,'
++  local short_options='-s,-f:,-b:,-a:,-p:'
+   local options
+ 
+   options="$(kw_parse "$short_options" "$long_options" "$@")"
+@@ -100,7 +100,7 @@ function parse_patch_track()
+   eval "set -- ${options}"
+ 
+   # Default values
+-  options_values['DASHBOARD']=''
++  options_values['SHOW']=''
+   options_values['PATCH_ID']=''
+   options_values['SET_STATUS']=
+   options_values['FROM']=''
+@@ -110,7 +110,7 @@ function parse_patch_track()
+   while [[ "$#" -gt 0 ]]; do
+     case "$1" in
+       --dashboard | -d)
+-        options_values['DASHBOARD']=1
++        options_values['SHOW']=1
+         shift 2
+         ;;
+       --patch_id)
+-- 
+2.34.1
+
