@@ -3,7 +3,6 @@
 include "${KW_LIB_DIR}/lib/kw_config_loader.sh"
 include "${KW_LIB_DIR}/lib/kwlib.sh"
 include "${KW_LIB_DIR}/lib/kw_string.sh"
-include "${KW_LIB_DIR}/send_patch.sh"
 
 # Hash containing user options
 declare -gA options_values
